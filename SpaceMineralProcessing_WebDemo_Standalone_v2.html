@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Space Mineral Processing Interactive Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-black text-white">
+  <div id="root" class="p-6 max-w-6xl mx-auto"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const stages = [{"title": "Prospecting & Site Selection", "description": "Identifying resource-rich areas using orbital mapping, rovers, and sample analysis.", "realImage": "https://www.nasa.gov/sites/default/files/thumbnails/image/1-lro-nasa-lunar-map.jpg", "imageCaption": "NASA Lunar Reconnaissance Orbiter mapping potential lunar resource zones (Credit: NASA/GSFC)", "details": "Space prospecting differs from Earth methods by relying more on remote sensing...", "comparison": "Earth: Uses drilling cores...\n\nSpace: Relies on orbital spectroscopy...", "regolith": {"moon": "Lunar regolith consists primarily of anorthosite...", "mars": "Martian regolith contains iron oxides..."}}, {"title": "Excavation in Low Gravity", "description": "Extracting regolith and rock using specialized equipment adapted for space conditions.", "realImage": "https://www.nasa.gov/sites/default/files/thumbnails/image/ksc-20210505-ph-kls01_0001.jpg", "imageCaption": "RASSOR prototype testing at Kennedy Space Center (Credit: NASA/Kim Shiflett)", "details": "Excavation in space faces unique challenges...", "comparison": "Earth: Uses heavy machinery...\n\nSpace: Requires lightweight equipment...", "regolith": {"moon": "Lunar regolith is extremely abrasive...", "mars": "Martian regolith is less abrasive..."}}, {"title": "Crushing & Grinding", "description": "Breaking down material with specialized equipment designed for vacuum and extreme temperatures.", "realImage": "https://www.nasa.gov/sites/default/files/thumbnails/image/isru-ballmill-prototype.jpg", "imageCaption": "ISRU-compatible sealed ball mill prototype for lunar material processing (Credit: NASA)", "details": "Crushing and grinding in space requires...", "comparison": "Earth: Uses water-based systems...\n\nSpace: Requires dry, sealed systems...", "regolith": {"moon": "Lunar regolith particle sizes typically range...", "mars": "Martian regolith contains more clay-sized particles..."}}, {"title": "Sieving & Sorting", "description": "Separating materials by size and type using mechanical or electrostatic methods.", "realImage": "https://mars.nasa.gov/system/resources/detail_files/25386_PIA24543-Mars2020-Perseverance-Magnetic-Separation-Web.jpg", "imageCaption": "Perseverance rover magnetic sample separator, Mars 2021 (Credit: NASA/JPL-Caltech)", "details": "In space environments, conventional wet screening isn't feasible...", "comparison": "Earth: Primarily uses wet screening...\n\nSpace: Must use dry screening...", "regolith": {"moon": "Lunar regolith magnetic susceptibility varies widely...", "mars": "Martian regolith contains 5-15% magnetic minerals..."}}, {"title": "Beneficiation", "description": "Enhancing mineral concentration through techniques adapted for vacuum environments.", "realImage": "https://www.nasa.gov/sites/default/files/thumbnails/image/nasa-swampworks-electrostatic.png", "imageCaption": "Electrostatic beneficiation test rig at NASA Swamp Works Lab (Credit: NASA)", "details": "Beneficiation in space must occur without water or air...", "comparison": "Earth: Uses flotation cells...\n\nSpace: Must use waterless methods...", "regolith": {"moon": "Lunar ilmenite is the primary target mineral...", "mars": "Martian hematite and other iron oxides are abundant..."}}, {"title": "Extraction & Processing", "description": "Converting minerals into usable resources using thermal, chemical, or electrolytic processes.", "realImage": "https://www.nasa.gov/sites/default/files/thumbnails/image/ffccambridge.png", "imageCaption": "FFC Cambridge reactor for oxygen and metal extraction from lunar regolith (Credit: NASA/ESA)", "details": "Extraction processes in space focus on obtaining critical resources...", "comparison": "Earth: Uses energy-intensive processes...\n\nSpace: Requires energy-efficient, closed-loop systems...", "regolith": {"moon": "Lunar regolith yields: 40-45% oxygen by weight...", "mars": "Martian regolith yields: 30-40% oxygen by weight..."}}, {"title": "Resource Storage & Utilization", "description": "Storing and using extracted resources for life support, fuel, construction, and manufacturing.", "realImage": "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2020/04/urbanite_project_lunar_3d_printing/22203288-1-eng-GB/Urbanite_project_lunar_3D_printing_pillars.jpg", "imageCaption": "3D printed lunar regolith pillars from ESA URBANITE project (Credit: ESA/URBANITE)", "details": "Extracted resources serve multiple vital functions...", "comparison": "Earth: Uses standard tanks...\n\nSpace: Requires specialized containers...", "regolith": {"moon": "Raw lunar regolith serves as excellent radiation shielding...", "mars": "Martian regolith mixed with polyethylene..."}}];
+
+    function App() {
+      const [stage, setStage] = useState(0);
+      const [popup, setPopup] = useState(null);
+      const [planet, setPlanet] = useState('moon');
+
+      return (
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <button onClick={() => setStage((stage - 1 + stages.length) % stages.length)} className="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Previous</button>
+            <h1 className="text-xl font-bold flex-1 text-center">{stages[stage].title}</h1>
+            <button onClick={() => setStage((stage + 1) % stages.length)} className="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Next</button>
+          </div>
+
+          <img src={stages[stage].realImage} alt={stages[stage].title} className="rounded shadow w-full max-h-[300px] object-cover" />
+          <p className="text-sm text-gray-300 italic text-center">{stages[stage].imageCaption}</p>
+          <p className="text-md">{stages[stage].description}</p>
+
+          <div className="flex flex-wrap gap-2">
+            <button onClick={() => setPopup('details')} className="bg-blue-700 px-3 py-1 rounded">Details</button>
+            <button onClick={() => setPopup('comparison')} className="bg-purple-700 px-3 py-1 rounded">Comparison</button>
+            <button onClick={() => setPopup('regolith')} className="bg-green-700 px-3 py-1 rounded">Regolith ({planet})</button>
+            <button onClick={() => setPlanet(planet === 'moon' ? 'mars' : 'moon')} className="bg-gray-600 px-3 py-1 rounded">Toggle: {planet.toUpperCase()}</button>
+          </div>
+
+          {popup && (
+            <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+              <div className="bg-gray-900 p-6 rounded-lg max-w-lg shadow-lg">
+                <h2 className="text-lg font-bold mb-2">{popup === 'details' ? 'Details' : popup === 'comparison' ? 'Comparison' : 'Regolith Data'}</h2>
+                <pre className="text-sm whitespace-pre-wrap">{popup === 'details' ? stages[stage].details : popup === 'comparison' ? stages[stage].comparison : stages[stage].regolith[planet]}</pre>
+                <button className="mt-4 bg-red-600 px-3 py-1 rounded" onClick={() => setPopup(null)}>Close</button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
